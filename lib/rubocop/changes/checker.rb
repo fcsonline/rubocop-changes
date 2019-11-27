@@ -64,7 +64,7 @@ module Rubocop
 
       def checks
         @checks ||= ruby_changed_files.map do |file|
-          analysis = rubocop_json['files'].find { |item| item['path'] == file }
+          analysis = rubocop_json.files.find { |item| item.path == file }
           patch = patches.find { |item| item.file == file }
 
           Check.new(analysis, patch)
