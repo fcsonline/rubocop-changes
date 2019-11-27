@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'rubocop/changes/checker'
+
+checker = Rubocop::Changes::Checker.new
+offenses = checker.run
+
+exit offenses.count.positive? ? 1 : 0
