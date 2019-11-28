@@ -48,8 +48,6 @@ There are similar projects out there, but all of them show all Rubocop offenses 
 
 Those are some ideas to improve `rubocop-changes`:
 
-- [ ] Join git diff commands & fork point
-- [ ] Add specs
 - [ ] Let users specify which formatter to use for the output
 - [ ] Let users specify the rubocop config file
 
