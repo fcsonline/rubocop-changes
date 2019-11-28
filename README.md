@@ -1,8 +1,20 @@
 # Rubocop::Changes
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rubocop/changes`. To experiment with that code, run `bin/console` for an interactive prompt.
+`rubocop-changes` runs rubocop and shows only the offenses you introduced since
+the fork point of your git branch. Will not complain about existing offenses in
+your main branch.
 
-TODO: Delete this and the text above, and describe your gem
+This is useful for CI checks for your pull requests but it could be useful too
+for you daily work, to know new offenses created by you.
+
+![Build Status](https://travis-ci.org/fcsonline/rubocop-changes.svg?branch=master)
+[![Code Climate](https://codeclimate.com/github/fcsonline/rubocop-changes/badges/gpa.svg)](https://codeclimate.com/github/fcsonline/rubocop-changes)
+[![Test Coverage](https://codeclimate.com/github/fcsonline/rubocop-changes/badges/coverage.svg)](https://codeclimate.com/github/fcsonline/rubocop-changes/coverage)
+[![Issue Count](https://codeclimate.com/github/fcsonline/rubocop-changes/badges/issue_count.svg)](https://codeclimate.com/github/fcsonline/rubocop-changes)
+
+Internally `rubocop-changes` runs `rubocop` and a `git diff` and does the
+intersection of line numbers to know the new offenses you are introducing to
+you master branch.
 
 ## Installation
 
@@ -22,15 +34,26 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+    $ bundle exec rubocop-changes
 
 ## Alternatives
 
-- https://github.com/yohira0616/diffcop
-- https://github.com/packsaddle/rubocop-select
+There are similar projects out there, but all of them show all Rubocop offenses for all changes files:
+
 - https://github.com/m4i/rubocop-git
-- https://github.com/SimpleNexus/nexocop
+- https://github.com/packsaddle/rubocop-select
 - https://github.com/mcgain/rubocop-diff
+- https://github.com/yohira0616/diffcop
+- https://github.com/SimpleNexus/nexocop
+
+## Ideas
+
+Those are some ideas to improve `rubocop-changes`:
+
+- [ ] Join git diff commands & fork point
+- [ ] Add specs
+- [ ] Let users specify which formatter to use for the output
+- [ ] Let users specify the rubocop config file
 
 ## Development
 
@@ -48,4 +71,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Rubocop::Changes project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/rubocop-changes/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Rubocop::Changes project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/fcsonline/rubocop-changes/blob/master/CODE_OF_CONDUCT.md).
