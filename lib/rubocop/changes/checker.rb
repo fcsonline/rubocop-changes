@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 require 'git_diff_parser'
 require 'byebug'
 require 'rubocop'
 require 'json'
 
 require 'rubocop/changes/check'
+require 'rubocop/changes/shell'
 
 module Rubocop
   module Changes
@@ -18,18 +21,7 @@ module Rubocop
 
         formatter.started('')
 
-        checks.each do |check|
-          offenses = check.offenses.map do |offense|
-            RuboCop::Cop::Offense.new(
-              offense.severity,
-              offense.location,
-              offense.message,
-              offense.cop_name
-            )
-          end
-
-          formatter.file_finished(check.path, offenses)
-        end
+        print_offenses(formatter)
 
         formatter.finished(ruby_changed_files)
 
@@ -38,20 +30,43 @@ module Rubocop
 
       private
 
-      def diff
-        `git diff $(git merge-base HEAD origin/master)`
+      def fork_point
+        @fork_point ||= Shell.run('git merge-base HEAD origin/master')
       end
 
-      def fork_point
-        `git merge-base HEAD origin/master`.strip
+      def diff
+        Shell.run("git diff #{fork_point}")
+      end
+
+      def patches
+        @patches ||= GitDiffParser.parse(diff)
       end
 
       def changed_files
-        `git diff --name-only #{fork_point}..`.split("\n")
+        patches.map(&:file)
       end
 
       def ruby_changed_files
         changed_files.select { |changed_file| changed_file =~ /.rb$/ }
+      end
+
+      def rubocop
+        Shell.run("bundle exec rubocop -f j #{ruby_changed_files.join(' ')}")
+      end
+
+      def rubocop_json
+        @rubocop_json ||= JSON.parse(rubocop, object_class: OpenStruct)
+      end
+
+      def checks
+        @checks ||= ruby_changed_files.map do |file|
+          analysis = rubocop_json.files.find { |item| item.path == file }
+          patch = patches.find { |item| item.file == file }
+
+          next unless analysis
+
+          Check.new(analysis, patch)
+        end.compact
       end
 
       def offended_lines
@@ -62,25 +77,23 @@ module Rubocop
         checks.map { |check| check.offended_lines.size }.inject(0, :+)
       end
 
-      def checks
-        @checks ||= ruby_changed_files.map do |file|
-          analysis = rubocop_json.files.find { |item| item.path == file }
-          patch = patches.find { |item| item.file == file }
-
-          Check.new(analysis, patch)
+      def print_offenses(formatter)
+        checks.each do |check|
+          print_offenses_for_check(formatter, check)
         end
       end
 
-      def patches
-        @patches ||= GitDiffParser.parse(diff)
-      end
+      def print_offenses_for_check(formatter, check)
+        offenses = check.offenses.map do |offense|
+          RuboCop::Cop::Offense.new(
+            offense.severity,
+            offense.location,
+            offense.message,
+            offense.cop_name
+          )
+        end
 
-      def rubocop
-        `bundle exec rubocop -f j #{changed_files.join(' ')}`.strip
-      end
-
-      def rubocop_json
-        @rubocop_json ||= JSON.parse(rubocop, object_class: OpenStruct)
+        formatter.file_finished(check.path, offenses)
       end
     end
   end
