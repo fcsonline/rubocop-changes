@@ -10,13 +10,18 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Ferran Basora"]
   spec.email         = ["fcsonline@gmail.com"]
 
-  spec.summary       = "Rubocop on changed lines"
-  spec.description   = "Run rubocop on changed lines from forked point"
+  spec.summary       = "Rubocop on changed lines from forked point"
+  spec.description   = <<-DESCRIPTION
+    rubocop-changes will run rubocop on changed lines from forked point in your main branch.
+    It will not complain about existing offenses in master branch.
+    This gem is perfect as a Continuous Integration tool
+  DESCRIPTION
+
   spec.homepage      = 'https://rubygems.org/gems/rubocop-changes'
   spec.license       = "MIT"
 
   spec.metadata = {
-    'source_code_uri' => spec.homepage,
+    'source_code_uri' => 'https://github.com/fcsonline/rubocop-changes',
     'bug_tracker_uri' => 'https://github.com/fcsonline/rubocop-changes/issues'
   }
 
