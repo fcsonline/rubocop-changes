@@ -1,16 +1,14 @@
 # Rubocop::Changes
 
+[![Gem Version](http://img.shields.io/gem/v/rubocop-changes.svg?style=flat)](http://badge.fury.io/rb/rubocop-changes)
+[![Build Status](http://img.shields.io/travis/fcsonline/rubocop-changes/master.svg?style=flat)](https://travis-ci.org/fcsonline/rubocop-changes)
+
 `rubocop-changes` runs rubocop and shows only the offenses you introduced since
 the fork point of your git branch. Will not complain about existing offenses in
 your main branch.
 
 This is useful for CI checks for your pull requests but it could be useful too
 for you daily work, to know new offenses created by you.
-
-![Build Status](https://travis-ci.org/fcsonline/rubocop-changes.svg?branch=master)
-[![Code Climate](https://codeclimate.com/github/fcsonline/rubocop-changes/badges/gpa.svg)](https://codeclimate.com/github/fcsonline/rubocop-changes)
-[![Test Coverage](https://codeclimate.com/github/fcsonline/rubocop-changes/badges/coverage.svg)](https://codeclimate.com/github/fcsonline/rubocop-changes/coverage)
-[![Issue Count](https://codeclimate.com/github/fcsonline/rubocop-changes/badges/issue_count.svg)](https://codeclimate.com/github/fcsonline/rubocop-changes)
 
 Internally `rubocop-changes` runs `rubocop` and a `git diff` and does the
 intersection of line numbers to know the new offenses you are introducing to
