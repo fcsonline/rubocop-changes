@@ -1,9 +1,17 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'rubocop/changes/checker'
+require 'rubocop'
 
-checker = Rubocop::Changes::Checker.new
-offenses = checker.run
+require 'rubocop/changes/checker'
+require 'rubocop/changes/options'
+
+args = Rubocop::Changes::Options.new.parse!
+
+offenses = Rubocop::Changes::Checker.new(
+  format: args.format,
+  quiet: args.quiet,
+  commit: args.commit
+).run
 
 exit offenses.count.positive? ? 1 : 0
