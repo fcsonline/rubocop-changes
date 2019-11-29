@@ -1,7 +1,8 @@
 PATH
   remote: .
   specs:
-    rubocop-changes (0.1.0)
+    rubocop-changes (0.1.2)
+      git_diff_parser (~> 3.2)
       rubocop (~> 0.59)
 
 GEM
@@ -46,10 +47,8 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 2.0)
   byebug (~> 10.0)
-  git_diff_parser (~> 3.2)
   rake (~> 10.0)
   rspec (~> 3.0)
-  rubocop (~> 0.59)
   rubocop-changes!
 
 BUNDLED WITH

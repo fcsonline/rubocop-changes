@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'git_diff_parser'
-require 'byebug'
 require 'rubocop'
 require 'json'
 
