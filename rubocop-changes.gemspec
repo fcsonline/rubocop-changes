@@ -10,10 +10,10 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Ferran Basora']
   spec.email         = ['fcsonline@gmail.com']
 
-  spec.summary       = "Rubocop on changed lines from forked point"
+  spec.summary       = 'Rubocop on changed lines from git fork point'
   spec.description   = <<-DESCRIPTION
     rubocop-changes will run rubocop on changed lines from forked point in your main branch.
-    It will not complain about existing offenses in master branch.
+    It will not complain about existing offenses in master branch on your git prioject.
     This gem is perfect as a Continuous Integration tool
   DESCRIPTION
 
@@ -26,8 +26,9 @@ Gem::Specification.new do |spec|
   }
 
   # Specify which files should be added to the gem when it is released.
-  # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
-  spec.files         = Dir.chdir(File.expand_path('..', __FILE__)) do
+  # The `git ls-files -z` loads the files in the RubyGem that have been added
+  # into git.
+  spec.files = Dir.chdir(File.expand_path('..', __FILE__)) do
     `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   end
   spec.bindir        = 'exe'

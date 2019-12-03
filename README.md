@@ -34,21 +34,25 @@ Or install it yourself as:
 
     $ bundle exec rubocop-changes
 
-## Alternatives
+## Other gems
 
-There are similar projects out there, but all of them show all Rubocop offenses for all changes files:
+There are similar projects out there, like
+[rubocop-git](https://github.com/m4i/rubocop-git),
+[diffcop](https://github.com/yohira0616/diffcop),
+[nexocop](https://github.com/SimpleNexus/nexocop), but not all of them offer
+differences at line level. Only
+[rubocop-git](https://github.com/m4i/rubocop-git) offer this nice feature but
+you have to craft the commit id to get the proper fork point of your pull
+request.
 
-- https://github.com/m4i/rubocop-git
-- https://github.com/packsaddle/rubocop-select
-- https://github.com/mcgain/rubocop-diff
-- https://github.com/yohira0616/diffcop
-- https://github.com/SimpleNexus/nexocop
+rubocop-changes does this diff out of the box without specify any commit id. If
+you want to get the offense comparing from one specific commit, you can pass
+the argument `commit` to the command.
 
 ## Ideas
 
 Those are some ideas to improve `rubocop-changes`:
 
-- [ ] Let users specify which formatter to use for the output
 - [ ] Let users specify the rubocop config file
 
 ## Development

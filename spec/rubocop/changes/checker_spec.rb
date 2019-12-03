@@ -4,15 +4,39 @@ require 'rubocop/changes/checker'
 require 'rubocop/changes/shell'
 
 RSpec.describe Rubocop::Changes::Checker do
-  subject { described_class.new.run }
+  let(:commit) { nil }
+
+  subject do
+    described_class.new(
+      format: :simple,
+      quiet: false,
+      commit: commit
+    ).run
+  end
 
   context 'when the for point is not known' do
-    it 'raises and exception' do
+    it 'raises an exception' do
       expect(Rubocop::Changes::Shell).to receive(:run).with(
         'git merge-base HEAD origin/master'
       ).and_return('')
 
-      expect { subject }.to raise_error(Rubocop::Changes::UnknownForkPointError)
+      expect do
+        subject
+      end.to raise_error(Rubocop::Changes::UnknownForkPointError)
+    end
+
+    context 'by given commit id' do
+      let(:commit) { 'deadbeef' }
+
+      it 'raises an exception' do
+        expect(Rubocop::Changes::Shell).to receive(:run).with(
+          'git log -n 1 --pretty=format:"%h" deadbeef'
+        ).and_return('')
+
+        expect do
+          subject
+        end.to raise_error(Rubocop::Changes::UnknownForkPointError)
+      end
     end
   end
 
@@ -30,7 +54,7 @@ RSpec.describe Rubocop::Changes::Checker do
       end.inject(:+)
     end
 
-    it 'run a git diff' do
+    it 'runs a git diff' do
       expect(Rubocop::Changes::Shell).to receive(:run).with(
         'git merge-base HEAD origin/master'
       ).and_return('deadbeef')
@@ -45,6 +69,27 @@ RSpec.describe Rubocop::Changes::Checker do
 
       expect(total_offenses).to be(2)
       expect(subject.size).to be(0)
+    end
+
+    context 'by given commit id' do
+      let(:commit) { 'deadbeef' }
+
+      it 'runs a git diff' do
+        expect(Rubocop::Changes::Shell).to receive(:run).with(
+          'git log -n 1 --pretty=format:"%h" deadbeef'
+        ).and_return('deadbeef')
+
+        expect(Rubocop::Changes::Shell).to receive(:run).with(
+          'git diff deadbeef'
+        ).and_return(git_diff)
+
+        expect(Rubocop::Changes::Shell).to receive(:run).with(
+          "bundle exec rubocop -f j #{diff_files.join(' ')}"
+        ).and_return(offenses)
+
+        expect(total_offenses).to be(2)
+        expect(subject.size).to be(0)
+      end
     end
   end
 end

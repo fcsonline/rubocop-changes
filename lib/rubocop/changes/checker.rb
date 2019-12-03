@@ -9,28 +9,37 @@ require 'rubocop/changes/shell'
 
 module Rubocop
   module Changes
+    class UnknownFormat < StandardError; end
     class UnknownForkPointError < StandardError; end
 
     class Checker
+      def initialize(format:, quiet:, commit:)
+        @format = format
+        @quiet = quiet
+        @commit = commit
+      end
+
       def run
         raise UnknownForkPointError if fork_point.empty?
+        raise UnknownFormat if formatter_klass.nil?
 
-        # TODO: Let users choose the formatter
-        formatter = RuboCop::Formatter::SimpleTextFormatter.new($stdout)
-
-        formatter.started('')
-
-        print_offenses(formatter)
-
-        formatter.finished(ruby_changed_files)
+        print_offenses! unless quiet
 
         checks.map(&:offenses).flatten
       end
 
       private
 
+      attr_reader :format, :quiet, :commit
+
       def fork_point
-        @fork_point ||= Shell.run('git merge-base HEAD origin/master')
+        @fork_point ||= Shell.run(command)
+      end
+
+      def command
+        return 'git merge-base HEAD origin/master' unless commit
+
+        "git log -n 1 --pretty=format:\"%h\" #{commit}"
       end
 
       def diff
@@ -76,13 +85,35 @@ module Rubocop
         checks.map { |check| check.offended_lines.size }.inject(0, :+)
       end
 
-      def print_offenses(formatter)
+      def print_offenses!
+        formatter.started(checks)
+
         checks.each do |check|
-          print_offenses_for_check(formatter, check)
+          print_offenses_for_check(check)
         end
+
+        formatter.finished(ruby_changed_files)
       end
 
-      def print_offenses_for_check(formatter, check)
+      def formatter
+        @formatter ||= formatter_klass.new($stdout)
+      end
+
+      def formatter_klass
+        @formatter_klass ||= formatters[format]
+      end
+
+      def formatters
+        rubocop_formatters.map do |key, value|
+          [key.gsub(/[\[\]]/, '').to_sym, value]
+        end.to_h
+      end
+
+      def rubocop_formatters
+        RuboCop::Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS
+      end
+
+      def print_offenses_for_check(check)
         offenses = check.offenses.map do |offense|
           RuboCop::Cop::Offense.new(
             offense.severity,
