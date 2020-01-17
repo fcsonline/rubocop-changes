@@ -59,7 +59,7 @@ module Rubocop
       end
 
       def rubocop
-        Shell.run("bundle exec rubocop -f j #{ruby_changed_files.join(' ')}")
+        Shell.run("rubocop -f j #{ruby_changed_files.join(' ')}")
       end
 
       def rubocop_json

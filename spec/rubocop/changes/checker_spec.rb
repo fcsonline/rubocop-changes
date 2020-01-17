@@ -64,7 +64,7 @@ RSpec.describe Rubocop::Changes::Checker do
       ).and_return(git_diff)
 
       expect(Rubocop::Changes::Shell).to receive(:run).with(
-        "bundle exec rubocop -f j #{diff_files.join(' ')}"
+        "rubocop -f j #{diff_files.join(' ')}"
       ).and_return(offenses)
 
       expect(total_offenses).to be(2)
@@ -84,7 +84,7 @@ RSpec.describe Rubocop::Changes::Checker do
         ).and_return(git_diff)
 
         expect(Rubocop::Changes::Shell).to receive(:run).with(
-          "bundle exec rubocop -f j #{diff_files.join(' ')}"
+          "rubocop -f j #{diff_files.join(' ')}"
         ).and_return(offenses)
 
         expect(total_offenses).to be(2)
