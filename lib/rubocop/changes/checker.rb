@@ -59,7 +59,7 @@ module Rubocop
       end
 
       def rubocop
-        Shell.run("rubocop -f j #{ruby_changed_files.join(' ')}")
+        Shell.run("rubocop --force-exclusion -f j #{ruby_changed_files.join(' ')}")
       end
 
       def rubocop_json
