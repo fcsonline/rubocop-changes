@@ -37,7 +37,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_runtime_dependency 'git_diff_parser', '~> 3.2'
-  spec.add_runtime_dependency 'rubocop', '~> 0.59'
+  spec.add_runtime_dependency 'rubocop', '~> 0.80'
 
   spec.add_development_dependency 'bundler', '~> 2.0'
   spec.add_development_dependency 'byebug', '~> 10.0'
