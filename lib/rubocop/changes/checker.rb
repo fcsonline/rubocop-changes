@@ -60,24 +60,26 @@ module Rubocop
       end
 
       def rubocop
-        shell_command = ['rubocop']
-        shell_command << exclussion_modifier
-        shell_command << formatter_modifier
-        shell_command << auto_correct_modifier
+        shell_command = [
+          'rubocop',
+          exclussion_modifier,
+          formatter_modifier,
+          auto_correct_modifier
+        ].compact.join(' ')
 
-        Shell.run(shell_command.compact.join(' '))
+        Shell.run(shell_command)
       end
 
       def exclussion_modifier
-        ['--force-exclusion']
+        '--force-exclusion'
       end
 
       def formatter_modifier
-        ["-f j #{ruby_changed_files.join(' ')}"]
+        "-f j #{ruby_changed_files.join(' ')}"
       end
 
       def auto_correct_modifier
-        ['-a'] if @auto_correct
+        '-a' if @auto_correct
       end
 
       def rubocop_json
