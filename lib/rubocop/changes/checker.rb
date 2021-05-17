@@ -13,10 +13,11 @@ module Rubocop
     class UnknownForkPointError < StandardError; end
 
     class Checker
-      def initialize(format:, quiet:, commit:)
+      def initialize(format:, quiet:, commit:, auto_correct:)
         @format = format
         @quiet = quiet
         @commit = commit
+        @auto_correct = auto_correct
       end
 
       def run
@@ -30,7 +31,7 @@ module Rubocop
 
       private
 
-      attr_reader :format, :quiet, :commit
+      attr_reader :format, :quiet, :commit, :auto_correct
 
       def fork_point
         @fork_point ||= Shell.run(command)
@@ -59,7 +60,24 @@ module Rubocop
       end
 
       def rubocop
-        Shell.run("rubocop --force-exclusion -f j #{ruby_changed_files.join(' ')}")
+        shell_command = ['rubocop']
+        shell_command << exclussion_modifier
+        shell_command << formatter_modifier
+        shell_command << auto_correct_modifier
+
+        Shell.run(shell_command.join(' '))
+      end
+
+      def exclussion_modifier
+        ['--force-exclusion']
+      end
+
+      def formatter_modifier
+        ["-f j #{ruby_changed_files.join(' ')}"]
+      end
+
+      def auto_correct_modifier
+        ['-a'] if @auto_correct
       end
 
       def rubocop_json

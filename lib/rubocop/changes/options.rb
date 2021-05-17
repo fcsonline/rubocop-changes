@@ -5,10 +5,10 @@ require 'optparse'
 module Rubocop
   module Changes
     class Options
-      Options = Struct.new(:format, :quiet, :commit)
+      Options = Struct.new(:format, :quiet, :commit, :auto_correct)
 
       def initialize
-        @args = Options.new(:simple, false, nil) # Defaults
+        @args = Options.new(:simple, false, nil, false) # Defaults
       end
 
       def parse!
@@ -18,6 +18,7 @@ module Rubocop
           parse_formatter!(opts)
           parse_commit!(opts)
           parse_quiet!(opts)
+          parse_auto_correct!(opts)
           parse_help!(opts)
           parse_version!(opts)
         end.parse!
@@ -61,6 +62,12 @@ module Rubocop
       def parse_quiet!(opts)
         opts.on('-q', '--quiet', 'Be quiet') do |v|
           args.quiet = v
+        end
+      end
+
+      def parse_auto_correct!(opts)
+        opts.on('-a', '--auto-correct', 'Auto correct errors') do |v|
+          args.auto_correct = v
         end
       end
 
