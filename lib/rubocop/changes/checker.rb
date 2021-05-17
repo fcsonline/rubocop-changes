@@ -65,7 +65,7 @@ module Rubocop
         shell_command << formatter_modifier
         shell_command << auto_correct_modifier
 
-        Shell.run(shell_command.join(' '))
+        Shell.run(shell_command.compact.join(' '))
       end
 
       def exclussion_modifier

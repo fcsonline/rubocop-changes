@@ -5,12 +5,14 @@ require 'rubocop/changes/shell'
 
 RSpec.describe Rubocop::Changes::Checker do
   let(:commit) { nil }
+  let(:auto_correct) { false }
 
   subject do
     described_class.new(
       format: :simple,
       quiet: false,
-      commit: commit
+      commit: commit,
+      auto_correct: auto_correct
     ).run
   end
 
@@ -88,6 +90,44 @@ RSpec.describe Rubocop::Changes::Checker do
         ).and_return(offenses)
 
         expect(total_offenses).to be(2)
+        expect(subject.size).to be(0)
+      end
+    end
+
+    context 'when auto_correct flag is not present' do
+      it do
+        expect(Rubocop::Changes::Shell).to receive(:run).with(
+          'git merge-base HEAD origin/master'
+        ).and_return('deadbeef')
+
+        expect(Rubocop::Changes::Shell).to receive(:run).with(
+          'git diff deadbeef'
+        ).and_return(git_diff)
+
+        expect(Rubocop::Changes::Shell).to receive(:run).with(
+          "rubocop --force-exclusion -f j #{diff_files.join(' ')}"
+        ).and_return(offenses)
+
+        expect(subject.size).to be(0)
+      end
+    end
+
+    context 'when auto_correct flag is present' do
+      let(:auto_correct) { true }
+
+      it do
+        expect(Rubocop::Changes::Shell).to receive(:run).with(
+          'git merge-base HEAD origin/master'
+        ).and_return('deadbeef')
+
+        expect(Rubocop::Changes::Shell).to receive(:run).with(
+          'git diff deadbeef'
+        ).and_return(git_diff)
+
+        expect(Rubocop::Changes::Shell).to receive(:run).with(
+          "rubocop --force-exclusion -f j #{diff_files.join(' ')} -a"
+        ).and_return(offenses)
+
         expect(subject.size).to be(0)
       end
     end
