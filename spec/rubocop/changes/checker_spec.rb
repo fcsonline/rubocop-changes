@@ -16,7 +16,7 @@ RSpec.describe Rubocop::Changes::Checker do
     ).run
   end
 
-  context 'when the for point is not known' do
+  context 'when the fork point is not known' do
     it 'raises an exception' do
       expect(Rubocop::Changes::Shell).to receive(:run).with(
         'git merge-base HEAD origin/master'
@@ -42,7 +42,7 @@ RSpec.describe Rubocop::Changes::Checker do
     end
   end
 
-  context 'when the for point is known' do
+  context 'when the fork point is known' do
     let(:diff_files) do
       %w[lib/rubocop/changes/checker.rb spec/rubocop/changes/checker_spec.rb]
     end
