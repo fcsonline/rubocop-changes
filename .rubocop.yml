@@ -1,3 +1,7 @@
+AllCops:
+  TargetRubyVersion: 2.5
+  NewCops: disable
+
 Lint/RaiseException:
   Enabled: false
 
@@ -14,6 +18,9 @@ Style/HashTransformValues:
   Enabled: false
 
 Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
   Enabled: false
 
 Layout/LineLength:
