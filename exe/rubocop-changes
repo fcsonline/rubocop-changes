@@ -12,7 +12,8 @@ offenses = Rubocop::Changes::Checker.new(
   format: args.format,
   quiet: args.quiet,
   commit: args.commit,
-  auto_correct: args.auto_correct
+  auto_correct: args.auto_correct,
+  base_branch: args.base_branch
 ).run
 
 exit offenses.count.positive? ? 1 : 0
