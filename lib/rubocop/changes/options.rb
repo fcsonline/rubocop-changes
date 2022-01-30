@@ -73,7 +73,7 @@ module Rubocop
       end
 
       def parse_base_branch!(opts)
-        opts.on('-b', '--base_branche', 'Base branch to compare') do |v|
+        opts.on('-b', '--base_branch', 'Base branch to compare') do |v|
           args.base_branch = v
         end
       end
