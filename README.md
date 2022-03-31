@@ -1,7 +1,7 @@
 # Rubocop::Changes
 
 [![Gem Version](https://img.shields.io/gem/v/rubocop-changes)](https://rubygems.org/gems/rubocop-changes)
-[![Build Status](https://img.shields.io/travis/com/fcsonline/rubocop-changes/master)](https://travis-ci.com/fcsonline/rubocop-changes)
+[![Build Status](https://github.com/fcsonline/rubocop-changes/actions/workflows/ci.yml/badge.svg)](https://github.com/fcsonline/rubocop-changes/actions/workflows/ci.yml)
 
 `rubocop-changes` runs rubocop and shows only the offenses you introduced since
 the fork point of your git branch. Will not complain about existing offenses in
