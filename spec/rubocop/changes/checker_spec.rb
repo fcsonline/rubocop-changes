@@ -12,7 +12,8 @@ RSpec.describe Rubocop::Changes::Checker do
       format: :simple,
       quiet: false,
       commit: commit,
-      auto_correct: auto_correct
+      auto_correct: auto_correct,
+      base_branch: 'master'
     ).run
   end
 

@@ -5,10 +5,10 @@ require 'optparse'
 module Rubocop
   module Changes
     class Options
-      Options = Struct.new(:format, :quiet, :commit, :auto_correct)
+      Options = Struct.new(:format, :quiet, :commit, :auto_correct, :base_branch)
 
       def initialize
-        @args = Options.new(:simple, false, nil, false) # Defaults
+        @args = Options.new(:simple, false, nil, false, 'main') # Defaults
       end
 
       def parse!
@@ -21,6 +21,7 @@ module Rubocop
           parse_auto_correct!(opts)
           parse_help!(opts)
           parse_version!(opts)
+          parse_base_branch!(opts)
         end.parse!
 
         args
@@ -68,6 +69,12 @@ module Rubocop
       def parse_auto_correct!(opts)
         opts.on('-a', '--auto-correct', 'Auto correct errors') do |v|
           args.auto_correct = v
+        end
+      end
+
+      def parse_base_branch!(opts)
+        opts.on('-b', '--base_branch [BRANCH]', 'Base branch to compare') do |v|
+          args.base_branch = v
         end
       end
 
