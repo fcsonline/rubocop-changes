@@ -8,7 +8,13 @@ module Rubocop
       Options = Struct.new(:format, :quiet, :commit, :auto_correct, :base_branch)
 
       def initialize
-        @args = Options.new(:simple, false, nil, false, 'main') # Defaults
+        @args = Options.new(
+          :simple,
+          false,
+          nil,
+          false,
+          ENV.fetch('RUBOCOP_CHANGES_BASE_BRANCH', 'main')
+        ) # Defaults
       end
 
       def parse!
@@ -73,7 +79,8 @@ module Rubocop
       end
 
       def parse_base_branch!(opts)
-        opts.on('-b', '--base_branch [BRANCH]', 'Base branch to compare') do |v|
+        env_message = 'Also, you can set RUBOCOP_CHANGES_BASE_BRANCH environment variable'
+        opts.on('-b', '--base-branch [BRANCH]', "Base branch to compare. #{env_message}") do |v|
           args.base_branch = v
         end
       end
