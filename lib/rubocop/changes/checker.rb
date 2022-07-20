@@ -123,7 +123,9 @@ module Rubocop
       end
 
       def formatter_klass
-        @formatter_klass ||= formatters[format]
+        return formatters[format] unless formatters[format].is_a? String
+
+        Kernel.const_get("RuboCop::Formatter::#{formatters[format]}")
       end
 
       def formatters
