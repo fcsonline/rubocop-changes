@@ -10,6 +10,7 @@ require 'rubocop/changes/shell'
 module Rubocop
   module Changes
     class UnknownFormat < StandardError; end
+    class UnknownBaseBranchError < StandardError; end
     class UnknownForkPointError < StandardError; end
 
     class Checker
@@ -22,6 +23,7 @@ module Rubocop
       end
 
       def run
+        raise UnknownBaseBranchError if base_branch.empty?
         raise UnknownForkPointError if fork_point.empty?
         raise UnknownFormat if formatter_klass.nil?
 
@@ -32,14 +34,14 @@ module Rubocop
 
       private
 
-      attr_reader :format, :quiet, :commit, :auto_correct
+      attr_reader :format, :quiet, :commit, :auto_correct, :base_branch
 
       def fork_point
         @fork_point ||= Shell.run(command)
       end
 
       def command
-        return "git merge-base HEAD origin/#{@base_branch}" unless commit
+        return "git merge-base HEAD origin/#{base_branch}" unless commit
 
         "git log -n 1 --pretty=format:\"%h\" #{commit}"
       end
