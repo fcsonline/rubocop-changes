@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rubocop-changes (0.6.0)
+    rubocop-changes (0.7.0)
       git_diff_parser (~> 3.2)
       rubocop (>= 1.0)
 
