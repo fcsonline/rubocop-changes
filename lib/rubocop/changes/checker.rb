@@ -36,6 +36,15 @@ module Rubocop
 
       attr_reader :format, :quiet, :commit, :auto_correct, :base_branch
 
+      def path_prefix
+        return @path_prefix if defined?(@path_prefix)
+        @path_prefix = local_git_root_path && Dir.pwd.gsub(local_git_root_path, '')[1..-1]
+      end
+
+      def local_git_root_path
+        @local_git_root_path ||= Shell.run("git rev-parse --show-toplevel")
+      end
+
       def fork_point
         @fork_point ||= Shell.run(command)
       end
@@ -59,7 +68,17 @@ module Rubocop
       end
 
       def ruby_changed_files
-        changed_files.select { |changed_file| changed_file =~ /.rb$/ }
+        changed_files.select { |changed_file| changed_file =~ /\.rb$/ }
+      end
+
+      def ruby_changed_files_from_pwd
+        ruby_changed_files.map do |path|
+          if path_prefix
+            path.gsub(/^#{path_prefix}\//, '')
+          else
+            path
+          end
+        end
       end
 
       def rubocop
@@ -78,11 +97,11 @@ module Rubocop
       end
 
       def formatter_modifier
-        "-f j #{ruby_changed_files.join(' ')}"
+        "-f j #{ruby_changed_files_from_pwd.join(' ')}"
       end
 
       def auto_correct_modifier
-        '-a' if @auto_correct
+        '-A' if @auto_correct
       end
 
       def rubocop_json
