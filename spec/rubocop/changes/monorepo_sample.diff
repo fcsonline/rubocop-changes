@@ -1,0 +1,51 @@
+diff --git a/backend/lib/rubocop/changes/checker.rb b/backend/lib/rubocop/changes/checker.rb
+index 83117fe..92a03ea 100644
+--- a/backend/lib/rubocop/changes/checker.rb
++++ b/backend/lib/rubocop/changes/checker.rb
+@@ -1,3 +1,5 @@
++# frozen_string_literal: true
++
+ require 'git_diff_parser'
+ require 'byebug'
+ require 'rubocop'
+@@ -39,11 +41,11 @@ module Rubocop
+       private
+
+       def fork_point
+-        `git merge-base HEAD origin/master`.strip
++        Shell.run('git merge-base HEAD origin/master')
+       end
+
+       def diff
+-        `git diff #{fork_point}`
++        Shell.run("git diff #{fork_point}")
+       end
+
+       def patches
+diff --git a/backend/spec/rubocop/changes/checker_spec.rb b/backend/spec/rubocop/changes/checker_spec.rb
+index 47dc367..8517e4a 100644
+--- a/backend/spec/rubocop/changes/checker_spec.rb
++++ b/backend/spec/rubocop/changes/checker_spec.rb
+@@ -1,17 +1,13 @@
+ # frozen_string_literal: true
+
+ RSpec.describe Rubocop::Changes::Checker do
+-  it 'has a version number' do
+-    expect(Rubocop::Changes::VERSION).not_to be nil
+-  end
++  it 'run a git diff' do
++    diff = File.read('sample.diff')
+
+-  it 'does something useful' do
+-    expect(false).to eq(true)
+-  end
++    expect(Rubocop::Changes::Shell).to receive(:run).with('git merge-base HEAD origin/master').and_return('deadbeef')
++    expect(Rubocop::Changes::Shell).to receive(:run).with('git diff deadbeef').and_return(diff)
+
+-  it 'always passes a formatter' do
+-    cli = object_double(RuboCop::CLI.new)
+-    expect(Rubocop::Changes::Shell).to receive(:new).and_return(cli)
++    expect(Rubocop::Changes::Shell).to receive(:run).with().and_return(cli)
+     expect(cli).to receive(:run).with(
+       ' --format RuboCop::Diff::Formatter'
+     )
