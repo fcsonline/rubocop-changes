@@ -73,11 +73,7 @@ module Rubocop
 
       def ruby_changed_files_from_pwd
         ruby_changed_files.map do |path|
-          if path_prefix
-            path.gsub(/^#{path_prefix}\//, '')
-          else
-            path
-          end
+          from_pwd_path(path)
         end
       end
 
@@ -110,7 +106,7 @@ module Rubocop
 
       def checks
         @checks ||= ruby_changed_files.map do |file|
-          analysis = rubocop_json.files.find { |item| item.path == file }
+          analysis = rubocop_json.files.find { |item| item.path == from_pwd_path(file) }
           patch = patches.find { |item| item.file == file }
 
           next unless analysis
@@ -168,6 +164,14 @@ module Rubocop
         end
 
         formatter.file_finished(check.path, offenses)
+      end
+
+      def from_pwd_path(path)
+        if path_prefix
+          path.gsub(/^#{path_prefix}\//, '')
+        else
+          path
+        end
       end
     end
   end
